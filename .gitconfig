@@ -1,0 +1,22 @@
+[alias]
+        co = checkout
+        ci = commit
+        st = status -uno --porcelain
+        br = branch
+        h = log --pretty=format:\"%h %ad | %s%d [%an]\" --date=short
+        type = cat-file -t
+        dump = cat-file -p
+        conflicts = diff --name-only --diff-filter=U
+        lstag = ls-remote -t origin refs/tags/$1
+        unstage = reset HEAD --
+        unchange = checkout --
+        gc = clean -d -x -f
+[user]
+        name = mrbald
+        email = mail@bobah.net
+[diff]
+        tool = tkdiff
+[difftool "tkdiff"]
+        cmd = tkdiff "$LOCAL" "$REMOTE"
+[difftool]
+        prompt = false
