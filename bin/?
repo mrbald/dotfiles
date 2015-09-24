@@ -1,0 +1,46 @@
+#!/bin/sh
+echo '
+---- bash/ksh file expansion
+    *                       : match zero or more characters
+    ?                       : match exactly one character
+    [ class ]               : match one character in class
+    [! class ]              : match one character not in class
+                                class is a range eg A-Z, a sequence eg xyz, a
+                                named class from the list
+                                :alnum: :alpha: :ascii: :blank: :cntrl:
+                                :digit: :graph: :lower: :print: :punct:
+                                :space: :upper: :word: :xdigit:,
+                                equivalence class =c= (for character c), or
+                                collating symbol .s.
+    [^ class ] (bash)       : match as [! class ]
+---- bash/ksh pattern lists (requires extglob in bash)
+    where pattern-list is pattern|pattern|...
+        ?( pattern-list )   : optionally match the pattern list once
+        *( pattern-list )   : match the pattern list zero or more times
+        +( pattern-list )   : match the pattern list one or more times
+        @( pattern-list )   : match the pattern list exactly once
+        !( pattern-list )   : match if the pattern list is not matched
+---- bash shell options (shopt: -s to set, -u to unset)
+    nullglob                : on  - failed pattern match returns null
+                              off - failed pattern match returns pattern
+    nocaseglob              : on  - pattern match disregards letter case
+                              off - pattern match requires letter case matching
+    dotglob                 : on  - *, ? match initial . in file names
+                              off - *, ? do not match initial . in file names
+    extglob                 : on  - allow pattern-list matching
+                              off - turn off pattern-list matching
+---- bash/ksh shell setting (set: -o to set, +o to unset)
+    noglob                  : turn off path expansion (same as "set -f")
+---- bash shell environment:
+GLOBIGNORE - if set to a list of patterns, pattern matching will ignore file
+             names that also match these patterns
+---- tilde expansion
+    Checked either at start of word or following = (in variable assignment)
+    or : (in paths)
+    - initial sequence upto a non-quoted / or : (if any) is substituted
+        ~               : replaced by $HOME (bash: or home dir of current user)
+        ~name           : replaced by home dir of user "name" (getpwnam())
+        ~+              : replaced by $PWD
+        ~-              : replaced by $OLDPWD
+        ~N (N number)   : replaced by Nth entry from directory stack (bash)
+    Anything else returns the original sequence without substitution '
