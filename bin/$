@@ -1,0 +1,54 @@
+#!/bin/sh
+echo '
+---- bash/ksh parameter expansion
+
+expansion                   : ${parameter}; $parameter
+indirection                 : ${!parameter}
+default value               : ${parameter:-word} \
+assign default value        : ${parameter:=word}  |_ / if unset or null -
+error if empty/unset        : ${parameter:?mesg}  |  \ use no ":" for unset only
+use word unless empty/unset : ${parameter:+word} /
+[bash] substring            : ${parameter:offset}
+[bash] substring            : ${parameter:offset:length}
+[bash] find variables       : ${!prefix*}
+length                      : ${#parameter}
+remove prefix (short match) : ${parameter#prefixpattern}  ("#" precedes numbers)
+remove prefix (long match)  : ${parameter##prefixpattern}
+remove suffix (short match) : ${parameter%suffixpattern}  ("%" follows numbers)
+remove suffix (long match)  : ${parameter%%suffixpattern}
+replace (first match)       : ${parameter/pattern/string}   [not old ksh]
+replace (all matches)       : ${parameter//pattern/string}  [not old ksh]
+[ksh93] replace prefix      : ${parameter/#pattern/string}
+[ksh93] replace suffix only : ${parameter/%pattern/string}
+[zsh] test for varaible set : ${+parameter}       # "1" if name is set, else "0"
+[zsh] set and substitute    : ${parameter::=word}   # set parameter to word
+[zsh] null if pattern match : ${parameter:#pattern}
+
+---- bash arrays (zero based - index i is a decimal integer)
+
+                              declare -a name; local -a name; readonly -a name
+                              declare -a name[i]
+                              array[i]=value
+                              array=( [0]=value [1]=value ... [i]=value )
+                              array=( value value value ... )
+element expansion           : ${array[i]}
+element 0 expansion         : ${array[0]}; ${array}; $array
+all elements expansion      : ${array[*]} ---- single string when "quoted"
+all elements expansion      : ${array[@]} ---- multiple strings when "quoted"
+number of array entries     : ${#array[*]}; ${#array[@]}
+element length              : ${#array[i]}
+delete an entry             : unset array[i]
+delete array                : unset array; unset array[*]; unset array[@]
+
+---- ksh arrays
+
+                              set -A name value0 value1 value2 ...
+
+---- bash special parameters
+$* command arguments ("$*" single string)
+$@ command arguments ("$@" multiple strings)
+$# number of command arguments
+$? last command status
+$- current shell option flags
+$$ shell process id - not for ( subshells ) $! process id of last started background process $0 name of current shell or script $_ absolute path of current shell at startup; or last arg of last command $'"'string'"' replaced with string but with all \-escape sequences substituted
+          (\a, \b, \e, \f, \n, \r, \t, \v, \\, \'"'"', \nnn, \xHH, \cx) '|less
