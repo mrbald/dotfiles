@@ -1,0 +1,7 @@
+#!/bin/awk -f
+# use: stripe -v begtm=14:51:00 endtm=14:55:00 < large.log > 1451-1455.log
+BEGIN { running = 0; }
+! running && $1 ~ /^[0-9][0-9]:/ && $1 >= begtm { running = 1; }
+running && $1 ~ /^[0-9][0-9]:/ && $1 > endtm { exit; }
+running { print; }
+END { }
