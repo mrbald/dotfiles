@@ -1,0 +1,39 @@
+#!/bin/bash
+
+#
+# Generic lightweight wrapper rig
+# Usage:
+#   ~/bin/wrapper <- this file
+#   ~/bin/gcc <- a symlink to ~/bin/wrapper
+#
+# Useful environment variables:
+#   WRAPPER_BOOTSTRAP - additional file to source into the shell environment
+#                       before executing the target command
+#   WRAPPER_PREFIX - additional text to insert in front of the command line
+#                    passed into exec, possible values: "echo", "strace", "time", etc.
+#
+
+set -eu
+
+# determine my basename and my directory without spawning processes
+declare myname=${BASH_SOURCE[0]##*/}
+cd ${BASH_SOURCE[0]%/*} >/dev/null
+declare mydir="${PWD}"
+cd - >/dev/null
+declare myfullname="${mydir}/${myname}"
+
+[[ ${myfullname} = $(readlink -f ${myfullname}) ]] && { echo "${myfullname} is invoked directly - probably not what you wanted" >&2; exit 2; }
+
+# determine the command to run - next best filesystem object match after myself
+declare -a cmds=($(type -aP ${myname}))
+declare -a cmds_but_myself=(${cmds[@]#${myfullname}})
+
+declare -r _wrapper_cmd="${cmds_but_myself[0]}"
+declare -a _wrapper_args="$@"
+declare -r _wrapper_args
+
+unset myname mydir myfullname cmds cmds_but_myself 
+
+[[ ${WRAPPER_BOOTSTRAP:=} ]] && source ${WRAPPER_BOOTSTRAP}
+
+exec ${WRAPPER_PREFIX:=} "${_wrapper_cmd}" "${_wrapper_args[@]}"
