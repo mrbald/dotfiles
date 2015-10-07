@@ -53,6 +53,9 @@ alias ssh-cowboy='ssh -q -oUserKnownHostsFile=/dev/null -oCheckHostIP=no -oStric
 # threads of the pid, usage: ps-threads <pid>
 alias ps-threads='ps --no-headers -ww -L -olwp'
 
+# threads of the process with CPU IDs and CPU %s, sorted by CPU %
+alias threads-of-process='watch -n.2 ps -o tid,psr,pcpu,comm --sort=-pcpu -L -p'
+
 # top the threads of a process, usage: top-threads <pid>
 alias top-threads='top -Hp'
 
