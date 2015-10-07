@@ -50,11 +50,14 @@ alias ssh-q='ssh -q'
 # ssh with security disabled
 alias ssh-cowboy='ssh -q -oUserKnownHostsFile=/dev/null -oCheckHostIP=no -oStrictHostKeyChecking=no'
 
-# threads of the pid, usage: ps-threads <pid>
-alias ps-threads='ps --no-headers -ww -L -olwp'
+# threads of the pid, usage: ps-threads-list <pid>
+alias ps-threads-list='ps --no-headers -ww -L -olwp'
 
-# threads of the process with CPU IDs and CPU %s, sorted by CPU %
-alias threads-of-process='watch -n.2 ps -o tid,psr,pcpu,comm --sort=-pcpu -L -p'
+# threads of the pid, usage: ps-threads-tree <pid>
+alias ps-threads-tree='pidstat -tw -p'
+
+# watch threads of the process with CPU IDs and CPU %s, sorted by CPU %, usage: ps-threads-watch <pid>
+alias ps-threads-watch='watch -n.2 ps -o tid,psr,pcpu,comm --sort=-pcpu -L -p'
 
 # top the threads of a process, usage: top-threads <pid>
 alias top-threads='top -Hp'
