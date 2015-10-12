@@ -66,7 +66,10 @@ alias top-threads='top -Hp'
 alias cpu-affinity='taskset -p'
 
 # starts a simple server in PWD, accepts optional argument - port
-httpit='python -m SimpleHTTPServer'
+alias httpit='python -m SimpleHTTPServer'
+
+# bash with clean environment
+alias bash-sterile='/bin/env -i /bin/bash --noprofile --norc'
 
 # export TMPDIR=/dev/shm/$USER/tmp
 # [[ -d $TMPDIR ]] || /bin/mkdir -p $TMPDIR
