@@ -11,6 +11,8 @@
         unstage = reset HEAD --
         unchange = checkout --
         gc = clean -d -x -f
+        ffpull = pull --ff-only
+        ffmerge = merge --ff-only
 [user]
         name = mrbald
         email = mail@bobah.net
