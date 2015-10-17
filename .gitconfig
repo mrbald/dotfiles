@@ -22,3 +22,5 @@
         cmd = tkdiff "$LOCAL" "$REMOTE"
 [difftool]
         prompt = false
+[merge]
+        conflictstyle = diff3
