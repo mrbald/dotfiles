@@ -71,6 +71,11 @@ alias httpit='python -m SimpleHTTPServer'
 # bash with clean environment
 alias bash-sterile='/bin/env -i /bin/bash --noprofile --norc'
 
+# rpath of the binary/library
+function rpath-of {
+    objdump -x $1 | awk '/RPATH/{print $2}'
+}
+
 # export TMPDIR=/dev/shm/$USER/tmp
 # [[ -d $TMPDIR ]] || /bin/mkdir -p $TMPDIR
 
