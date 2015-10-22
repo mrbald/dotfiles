@@ -71,6 +71,14 @@ alias httpit='python -m SimpleHTTPServer'
 # bash with clean environment
 alias bash-sterile='/bin/env -i /bin/bash --noprofile --norc'
 
+# grep combo to print regexp submatch only
+# http://superuser.com/questions/11130/can-gnu-grep-output-a-selected-group
+# Usage:
+#  echo 'a b c' | grep-submatch '(?<=a )b(?= c)' ;# outputs "b"
+#  echo 'a b c' | grep-submatch '(?<=a )[bc ]+'  ;# outputs "b c"
+#  echo 'a b c' | grep-submatch '[ab ]+(?= c)'   ;# outputs "a b"
+alias grep-submatch='grep -Po'
+
 # rpath of the binary/library
 function rpath-of {
     objdump -x $1 | awk '/RPATH/{print $2}'
