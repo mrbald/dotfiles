@@ -1,0 +1,10 @@
+#!/bin/bash
+# AStyle plugin for NEdit
+# Usage (add to ~/.nedit/nedit.rc):
+#   nedit.shellCommands: \
+#     astyle:Shift+Ctrl+I::IX:\n\
+#       astyle.nedit --style=allman --indent=spaces=4 --indent-switches --break-blocks --pad-oper --keep-one-line-blocks --keep-one-line-statements --align-pointer=type --align-reference=type --convert-tabs\n\
+
+astyle "$@" << EOF
+$(/bin/cat <&0)
+EOF
