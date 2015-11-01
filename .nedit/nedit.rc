@@ -1,16 +1,17 @@
 ! Preferences file for NEdit
+! (User settings in X "application defaults" format)
 !
-! This file is overwritten by the "Save Defaults..." command in NEdit 
+! This file is overwritten by the "Save Defaults..." command in NEdit
 ! and serves only the interactively settable options presented in the NEdit
-! "Preferences" menu.  To modify other options, such as key bindings, use 
-! the .Xdefaults file in your home directory (or the X resource 
-! specification method appropriate to your system).  The contents of this 
+! "Preferences" menu.  To modify other options, such as key bindings, use
+! the .Xdefaults file in your home directory (or the X resource
+! specification method appropriate to your system).  The contents of this
 ! file can be moved into an X resource file, but since resources in this file
 ! override their corresponding X resources, either this file should be 
 ! deleted or individual resource lines in the file should be deleted for the
 ! moved lines to take effect.
 
-nedit.fileVersion: 5.5
+nedit.fileVersion: 5.6
 nedit.shellCommands: \
 	spell:Alt+B:s:EX:\n\
 		cat>spellTmp; xterm -e ispell -x spellTmp; cat spellTmp; rm spellTmp\n\
@@ -455,7 +456,7 @@ nedit.languageModes: 	Ada:.ada .ad .ads .adb .a:::::::\n\
 	X Resources:.Xresources .Xdefaults .nedit .pats nedit.rc:"^[!#].*([Aa]pp|[Xx]).*[Dd]efaults"::::::\n\
 	Yacc:.y::::::".,/\\`'!|@#%^&*()-=+{}[]"":;<>?~":\n\
 	CMake:CMakeLists.txt .cmake:::None:::".,/\\`'!|@#%^&*()-=+{}[]"":;<>?~":\n\
-	Diff:.diff .patch:"^(---\\s.*$|\\+\\+\\+\\s.*$|\\*\\*\\*\\s.*$)"::::::\n\
+	Diff:.diff .patch:"^(---\\s.*$|\\+\\+\\+\\s.*$|\\*\\*\\*\\s.*$)"::::::
 nedit.styles: 	Plain:black:Plain\n\
 	Comment:gray20:Italic\n\
 	Keyword:black:Bold\n\
@@ -488,12 +489,7 @@ nedit.styles: 	Plain:black:Plain\n\
 	LaTeX Math:darkGreen:Plain\n\
 	Pointer:#660000:Bold\n\
 	Regex:#009944:Bold\n\
-	Warning:brown2:Italic\n\
-	DiffIn:blue:Plain\n\
-	DiffOut:red:Plain\n\
-	DiffFile1:red:Bold\n\
-	DiffFile2:blue:Bold\n\
-	DiffHunk:purple:Italic
+	Warning:brown2:Italic
 nedit.smartIndentInit: 	C:Default\n\
 	C++:Default\n\
 	Python:Default\n\
@@ -548,6 +544,7 @@ nedit.hiliteFgColor: white
 nedit.hiliteBgColor: red
 nedit.lineNoFgColor: black
 nedit.cursorFgColor: black
+nedit.shell: /bin/bash
 nedit.smartTags: True
 nedit.prefFileRead: True
 nedit.titleFormat: {%c} [%s] %f (%S) - %d
