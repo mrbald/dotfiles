@@ -1,0 +1,33 @@
+NEdit*visualID: default
+
+nedit*enableThinThickness:     True
+nedit*enableToggleVisual:      True
+nedit*enableToggleColor:       True
+nedit*enableEtchedInMenu:      True
+nedit*XmMenuShell*XmTearOffButton*ShadowThickness:   2
+
+nedit*text.background:         white
+nedit*text.selectBackground:   #d0d0FF
+nedit*background:              gray85
+nedit*statsForm.background:    gray85
+nedit*statsLine.background:    gray85
+nedit*bottomShadowColor:       gray65
+nedit*topShadowColor:          #fefefe
+
+nedit*XmText.background:       white
+nedit*XmTextField.background:  white
+nedit*XmList.background:       white
+
+nedit*shell:                                       /bin/bash
+nedit*FileSelect.pattern:                          *
+
+nedit.backlightCharTypes:  0-8,10-31,127:#aaaaff;9:#d0d0d0;32-126:#f8f8f8;160-255:#f8f8f8;128-159:#aaaaff
+
+nedit*fontList:-schumacher-clean-medium-r-normal-*-12-*-*-*-*-*-*-*
+nedit*XmList.fontList:-schumacher-clean-medium-r-normal-*-12-*-*-*-*-*-*-*
+nedit*XmText.fontList:-schumacher-clean-medium-r-normal-*-12-*-*-*-*-*-*-*
+nedit*XmTextField.fontList:-schumacher-clean-medium-r-normal-*-12-*-*-*-*-*-*-*
+
+nedit*helpText.font: -schumacher-clean-medium-r-normal-*-12-*-*-*-*-*-*-*
+
+*TkTheme: clam
