@@ -17,15 +17,15 @@ set -eu
 
 # determine my basename and my directory without spawning processes
 declare myname=${BASH_SOURCE[0]##*/}
-cd ${BASH_SOURCE[0]%/*} >/dev/null
+cd "${BASH_SOURCE[0]%/*}" >/dev/null
 declare mydir="${PWD}"
 cd - >/dev/null
 declare myfullname="${mydir}/${myname}"
 
-[[ ${myfullname} = $(readlink -f ${myfullname}) ]] && { echo "${myfullname} is invoked directly - probably not what you wanted" >&2; exit 2; }
+[[ ${myfullname} = $(readlink -f "${myfullname}") ]] && { echo "${myfullname} is invoked directly - probably not what you wanted" >&2; exit 2; }
 
 # determine the command to run - next best filesystem object match after myself
-declare -a cmds=($(type -aP ${myname}))
+declare -a cmds=($(type -aP "${myname}"))
 declare -a cmds_but_myself=(${cmds[@]#${myfullname}})
 
 declare -r _wrapper_cmd="${cmds_but_myself[0]}"
@@ -34,6 +34,6 @@ declare -r _wrapper_args
 
 unset myname mydir myfullname cmds cmds_but_myself 
 
-[[ ${WRAPPER_BOOTSTRAP:=} ]] && source ${WRAPPER_BOOTSTRAP}
+[[ ${WRAPPER_BOOTSTRAP:=} ]] && source "${WRAPPER_BOOTSTRAP}"
 
-exec ${WRAPPER_PREFIX:=} "${_wrapper_cmd}" "${_wrapper_args[@]}"
+exec "${WRAPPER_PREFIX:=}" "${_wrapper_cmd}" "${_wrapper_args[@]}"
