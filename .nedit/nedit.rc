@@ -380,6 +380,7 @@ nedit.highlightPatterns: Ada:Default\n\
 		storage keyword:"<(?:class|typename|typeid|template|friend|virtual|inline|explicit|operator|public|private|protected|const|extern|register|static|mutable|unsigned|signed|volatile|char|double|float|int|long|short|bool|wchar_t|void|typedef|struct|union|enum|asm|export|constexpr)>":::Storage Type::D\n\
 		keyword:"<(?:new|delete|this|return|goto|if|else|case|default|switch|break|continue|while|do|for|try|catch|throw|sizeof|true|false|namespace|using|dynamic_cast|static_cast|reinterpret_cast|const_cast|declype|auto|override|final|noexcept|final|decltype)>":::Keyword::D\n\
 		braces:"[{}\\|(\\)\\[\\]<>]":::Keyword::D\n\
+		C++11 raw string literal:"R""(.*?)\\((?n.+?)\\)\\1""":::String2::\n\
 	}\n\
 	C:Default\n\
 	CSS:Default\n\
