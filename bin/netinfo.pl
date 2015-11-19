@@ -1,4 +1,5 @@
 #!/usr/bin/perl
+# Copyright (C) 2015 Vladimir Lysyy (mrbald@github)
 
 use strict;
 use warnings;
