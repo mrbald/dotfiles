@@ -1,4 +1,5 @@
 #!/bin/bash
+# Copyright (C) 2015 Vladimir Lysyy (mrbald@github)
 
 [[ ! -z $1 ]] || { echo usage: $0 network-interface; exit 2; }
 
