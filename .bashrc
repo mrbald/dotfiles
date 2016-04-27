@@ -112,3 +112,7 @@ function dmesg-for-humans {
 }
 
 alias rm-unused-files="/bin/find . -mindepth 1 -maxdepth 1 -type f -exec /bin/bash -c '/sbin/fuser -s {} || /bin/rm -f {}' ';'"
+
+function jdb-attach {
+    jdb -connect sun.jvm.hotspot.jdi.SAPIDAttachingConnector:pid=$1
+}
