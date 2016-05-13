@@ -116,3 +116,5 @@ alias rm-unused-files="/bin/find . -mindepth 1 -maxdepth 1 -type f -exec /bin/ba
 function jdb-attach {
     jdb -connect sun.jvm.hotspot.jdi.SAPIDAttachingConnector:pid=$1
 }
+
+alias ipython3='$(type -P ipython3) --colors LightBG --pylab --no-banner'
