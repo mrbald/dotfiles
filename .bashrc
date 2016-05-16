@@ -41,6 +41,9 @@ alias screen='screen -DRS'
 # correct time (not a built-in) with correct flags
 alias timeit='/usr/bin/time -v -p --'
 
+# run process in batch mode, trade better CPU share for worse latency (good for compilation, etc.)
+alias batched='chrt --batch 0'
+
 # creates background ssh session reusable by others (needs specific .ssh/config) 
 alias ssh-bg='ssh -Nf'
 
