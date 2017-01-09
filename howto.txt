@@ -1,0 +1,5 @@
+Command to dump context switching stats on all “java” processes
+LC_ALL=C pidstat -w -C java | tail -n +4 | awk '{print $2,$3,$4,$4/($3+$4+1e-20)}' | while read line; do echo $(hostname) ':' ${line}; done
+
+Command to dump context switching stats across all processes on the box and give one single number
+LC_ALL=C pidstat -w | tail -n +4 | awk '{CSWT+=$3; NVCSWT+=$4} END { print CSWT,NVCSWT,NVCSWT/(CSWT+NVCSWT+1e-20)}' | while read line; do echo $(hostname) ':' ${line}; done
