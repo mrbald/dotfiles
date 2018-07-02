@@ -3,6 +3,8 @@
         ci = commit
         st = status -uno --porcelain
         br = branch
+        lb branch -v -v
+        pwd rev-parse --abbrev-ref HEAD
         h = log --pretty=format:\"%h %ad | %s%d [%an]\" --date=short
         type = cat-file -t
         dump = cat-file -p
