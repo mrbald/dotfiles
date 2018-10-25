@@ -27,7 +27,7 @@
 [merge]
         conflictstyle = diff3
 [core]
-        askPass = ~/git_password.sh
+        askPass = ~/bin/git_password.sh
 [push]
         default = simple
 [color "branch"]
