@@ -26,3 +26,10 @@
         prompt = false
 [merge]
         conflictstyle = diff3
+[core]
+        askPass = ~/git_password.sh
+[push]
+        default = simple
+[color "branch"]
+        upstream = bold blue
+
