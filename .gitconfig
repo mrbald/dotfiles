@@ -1,33 +1,29 @@
 [alias]
+        lsa = config --get-regex ^alias
         co = checkout
         ci = commit
+        unci = reset --soft HEAD^1
         st = status -uno --porcelain
         br = branch
+        bu = branch -u
         lb = branch -v -v
         pwd = rev-parse --abbrev-ref HEAD
+        po = push origin
+        fpo = push --force-with-lease origin
         h = log --pretty=format:\"%h %ad | %s%d [%an]\" --date=short
-        type = cat-file -t
-        dump = cat-file -p
-        conflicts = diff --name-only --diff-filter=U
+        h5 = h -n5
+        h10 = h -n10
+        h20 = h -n10
+        h50 = h -n10
         lstag = ls-remote -t origin refs/tags/$1
         unstage = reset HEAD --
         unchange = checkout --
         wipe = clean -d -x -f
-        ffpull = pull --ff-only
-        ffmerge = merge --ff-only
 [user]
         name = mrbald
         email = mail@bobah.net
-[diff]
-        tool = tkdiff
-[difftool "tkdiff"]
-        cmd = tkdiff "$LOCAL" "$REMOTE"
-[difftool]
-        prompt = false
 [merge]
         conflictstyle = diff3
-[core]
-        askPass = ~/bin/git_password.sh
 [push]
         default = simple
 [color "branch"]
