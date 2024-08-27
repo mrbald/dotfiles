@@ -10,14 +10,16 @@
         pwd = rev-parse --abbrev-ref HEAD
         po = push origin
         fpo = push --force-with-lease origin
+        rb = rebase --autostash
         h = log --pretty=format:\"%h %ad | %s%d [%an]\" --date=short
         h5 = h -n5
         h10 = h -n10
-        h20 = h -n10
-        h50 = h -n10
+        h20 = h -n20
+        h50 = h -n50
         lstag = ls-remote -t origin refs/tags/$1
         unstage = reset HEAD --
         unchange = checkout --
+        chmox = udpate-index --chmod=+x
         wipe = clean -d -x -f
 [user]
         name = mrbald
