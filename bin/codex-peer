@@ -1,0 +1,154 @@
+#!/bin/sh
+# codex-peer: run one Codex pass over a brief; keep its thread and last message.
+#
+#   codex-peer gpt-x brief.md /tmp/review 300
+#   codex-peer gpt-x followup.md /tmp/again 300 --resume THREAD --effort high
+#   codex-peer gpt-x build.md /tmp/build 900 --sandbox containers
+#
+# Usage: codex-peer MODEL BRIEF OUT SECONDS [--resume THREAD] [--effort LEVEL]
+#        [--sandbox MODE]
+# Run inside a git repo. Writes OUT.jsonl, OUT.err, OUT.thread and OUT.md.
+# Needs codex, python3, perl and git. Uses caffeinate on macOS when available.
+# The brief must say "call no other model". CODEX_PEER_GUARD changes that phrase;
+# an empty value disables the guard. Effort defaults to xhigh (high on resume).
+# Sandbox modes: read-only (default), workspace-write, danger-full-access,
+# containers. Containers uses the workspace permission profile plus network for
+# podman, docker and uv; uv cache lives under /tmp. Apple `container` stays
+# refused by the sandbox. This does not start a runtime or grant full disk access.
+# A perl alarm bounds the Codex run; reaching the limit is a failure.
+# Exit: 0 last message saved; 64 bad usage or missing brief guard; 65 outside git;
+# 70 no agent message; 71 missing dependency, cleanup, extraction or output-write
+# failure, or Codex failed/timed out. Any saved message on exit 71 is incomplete.
+set -u
+
+usage='usage: codex-peer MODEL BRIEF OUT SECONDS [--resume THREAD] [--effort LEVEL] [--sandbox MODE]'
+
+[ $# -ge 4 ] || { echo "$usage" >&2; exit 64; }
+MODEL=$1
+BRIEF=$2
+OUT=$3
+SECONDS_LIMIT=$4
+shift 4
+
+RESUME=
+EFFORT=
+SANDBOX=read-only
+while [ $# -gt 0 ]; do
+    [ $# -ge 2 ] || { echo "$usage" >&2; exit 64; }
+    case "$1" in
+    --resume) RESUME=$2 ;;
+    --effort) EFFORT=$2 ;;
+    --sandbox) SANDBOX=$2 ;;
+    *) echo "$usage" >&2; exit 64 ;;
+    esac
+    shift 2
+done
+
+if [ -z "$EFFORT" ]; then
+    if [ -n "$RESUME" ]; then EFFORT=high; else EFFORT=xhigh; fi
+fi
+
+case "$SECONDS_LIMIT" in
+'' | *[!0-9]*) echo "codex-peer: SECONDS must be a whole number." >&2; exit 64 ;;
+esac
+# alarm 0 would set no limit
+[ "$SECONDS_LIMIT" -gt 0 ] || { echo "codex-peer: SECONDS must be above zero." >&2; exit 64; }
+case "$SANDBOX" in
+read-only | workspace-write | danger-full-access | containers) ;;
+*) echo "codex-peer: unknown sandbox mode $SANDBOX." >&2; exit 64 ;;
+esac
+for dependency in codex python3 perl git grep rm uname; do
+    command -v "$dependency" >/dev/null 2>&1 || {
+        echo "codex-peer: missing dependency $dependency." >&2
+        exit 71
+    }
+done
+[ -f "$BRIEF" ] || { echo "codex-peer: no brief at $BRIEF." >&2; exit 64; }
+GUARD=${CODEX_PEER_GUARD-"call no other model"}
+[ -z "$GUARD" ] || grep -F -q -- "$GUARD" "$BRIEF" || {
+    echo "codex-peer: the brief must say \"$GUARD\"." >&2
+    exit 64
+}
+git rev-parse --git-dir >/dev/null 2>&1 || {
+    echo "codex-peer: run from inside a git repo." >&2
+    exit 65
+}
+
+effort_config="model_reasoning_effort=\"$EFFORT\""
+
+run() {
+    if [ "$(uname -s)" = Darwin ] && command -v caffeinate >/dev/null 2>&1; then
+        caffeinate -i perl -e 'alarm shift; exec @ARGV or die $!' -- "$SECONDS_LIMIT" "$@"
+    else
+        perl -e 'alarm shift; exec @ARGV or die $!' -- "$SECONDS_LIMIT" "$@"
+    fi
+}
+
+# An OUT.md or OUT.thread left by an earlier round must not pass for this one.
+rm -f -- "$OUT.md" "$OUT.thread" || {
+    echo "codex-peer: cannot remove stale outputs for $OUT." >&2
+    exit 71
+}
+
+# Resume accepts the sandbox setting through config rather than --sandbox.
+if [ -n "$RESUME" ]; then
+    set -- codex exec resume "$RESUME" --json -m "$MODEL" -c "$effort_config"
+else
+    set -- codex exec --json -m "$MODEL" -c "$effort_config"
+fi
+if [ "$SANDBOX" = containers ]; then
+    set -- "$@" -c 'default_permissions="codex-peer-containers"' \
+        -c 'permissions.codex-peer-containers.extends=":workspace"' \
+        -c 'permissions.codex-peer-containers.network.enabled=true'
+    UV_CACHE_DIR=/tmp/codex-peer-uv-cache
+    export UV_CACHE_DIR
+else
+    if [ -n "$RESUME" ]; then
+        set -- "$@" -c "sandbox_mode=\"$SANDBOX\""
+    else
+        set -- codex exec --sandbox "$SANDBOX" --json -m "$MODEL" -c "$effort_config"
+    fi
+fi
+run "$@" - <"$BRIEF" >"$OUT.jsonl" 2>"$OUT.err"
+status=$?
+
+python3 - "$OUT.jsonl" "$OUT" "$RESUME" <<'PYTHON'
+import json
+import sys
+from pathlib import Path
+
+source, out, fallback = sys.argv[1:]
+thread = message = None
+for line in Path(source).read_text(encoding="utf-8").splitlines():
+    try:
+        event = json.loads(line)
+    except ValueError:
+        continue
+    if not isinstance(event, dict):
+        continue
+    if event.get("type") == "thread.started" and thread is None:
+        thread = event.get("thread_id")
+    item = event.get("item")
+    if isinstance(item, dict) and item.get("type") == "agent_message":
+        text = item.get("text")
+        if isinstance(text, str):
+            message = text
+thread = thread or fallback
+if thread:
+    Path(out + ".thread").write_text(thread + "\n", encoding="utf-8")
+if message is None:
+    print(f"codex-peer: no agent message in {source}.", file=sys.stderr)
+    sys.exit(70)
+Path(out + ".md").write_text(message + "\n", encoding="utf-8")
+print(thread or "")
+print(out + ".md")
+PYTHON
+extracted=$?
+if [ "$status" -ne 0 ]; then
+    echo "codex-peer: codex exited $status; the review is incomplete; see $OUT.err." >&2
+    exit 71
+fi
+case "$extracted" in
+0 | 70) exit "$extracted" ;;
+*) echo "codex-peer: extraction or output-write failure for $OUT." >&2; exit 71 ;;
+esac
